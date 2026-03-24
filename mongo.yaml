@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  my-app:
+    image: 46.101.101.185:8083/my-app:1.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+
+  mongo-express:
+    image: mongo-express:1
+    restart: always
+    depends_on:
+      - mongodb
+    ports:
+      - "8082:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb

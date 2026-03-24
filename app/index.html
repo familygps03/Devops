@@ -1,4 +1,10 @@
+<!DOCTYPE html>
 <html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Profile</title>
 <style>
     .container {
         margin: 40px auto;
@@ -25,11 +31,11 @@
         display: inline-block;
     }
     #container {
-        display: none;
+  display: block;   /* show the profile view */
     }
-    #container-edit {
-        display: none;
-    }
+   #container-edit {
+  display: none;    /* keep edit hidden until you click edit */
+    } 
     #container-edit input {
         height: 32px;
     }
@@ -43,18 +49,24 @@
 </style>
 <script>
     (async function init() {
-        const response = await fetch('http://localhost:3000/get-profile');
-        console.log("response", response);
-        const user = await response.json();
-        console.log(JSON.stringify(user));
+  const cont = document.getElementById('container');
 
-        document.getElementById('name').textContent = user.name ? user.name : 'Anna Smith';
-        document.getElementById('email').textContent = user.email ? user.email : 'anna.smith@example.com';
-        document.getElementById('interests').textContent = user.interests ? user.interests : 'coding';
+  try {
+    const response = await fetch('http://localhost:3000/get-profile');
+    if (!response.ok) throw new Error("HTTP " + response.status);
 
-        const cont = document.getElementById('container');
-        cont.style.display = 'block';
-    })();
+    const user = await response.json();
+
+    document.getElementById('name').textContent = user.name || 'Anna Smith';
+    document.getElementById('email').textContent = user.email || 'anna.smith@example.com';
+    document.getElementById('interests').textContent = user.interests || 'coding';
+  } catch (err) {
+    console.log("Backend not working yet:", err);
+    // It will show default values already in HTML
+  }
+
+  cont.style.display = 'block';
+})();
 
     async function handleUpdateProfileRequest() {
         const contEdit = document.getElementById('container-edit');
@@ -99,7 +111,7 @@
 <body>
     <div class='container' id='container'>
         <h1>User profile</h1>
-        <img src='profile-picture' alt="user-profile">
+        <img src="/profile-picture" alt="user-profile-1">
         <span>Name: </span><h3 id='name'>Anna Smith</h3>
         <hr />
         <span>Email: </span><h3 id='email'>anna.smith@example.com</h3>
@@ -110,7 +122,7 @@
     </div>
     <div class='container' id='container-edit'>
         <h1>User profile</h1>
-        <img src='profile-picture' alt="user-profile">
+        <img src="/profile-picture" alt="user-profile-1">
         <span>Name: </span><label for='input-name'></label><input type="text" id='input-name' value='Anna Smith' />
         <hr />
         <span>Email: </span><label for='input-email'></label><input type="email" id='input-email' value='anna.smith@example.com' />
